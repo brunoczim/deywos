@@ -9,6 +9,8 @@ LD_EXT_x86_64 = .ld
 ASM_OBJS_x86_64 = \
 	boot.o
 
+QEMU_x86_64 = qemu-system-x86_64
+
 ASM = $(ASM_$(ARCH))
 ASM_EXT = $(ASM_EXT_$(ARCH))
 
@@ -17,6 +19,8 @@ LD_EXT = $(LD_EXT_$(ARCH))
 
 ASM_OBJS = $(patsubst %,build/$(ARCH)/asm/%,$(ASM_OBJS_$(ARCH)))
 
+QEMU = $(QEMU_$(ARCH))
+
 MKDIR_P = mkdir -p
 
 GRUB_MKISO = grub-mkrescue
@@ -24,6 +28,9 @@ GRUB_MKISO = grub-mkrescue
 CP = cp -r
 
 iso: build/$(ARCH)/deywos.iso
+
+qemu: iso
+	$(QEMU) -cdrom build/$(ARCH)/deywos.iso
 
 clean:
 	$(RM) -r build
