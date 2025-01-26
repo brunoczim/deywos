@@ -19,17 +19,28 @@ ASM_OBJS = $(patsubst %,build/$(ARCH)/asm/%,$(ASM_OBJS_$(ARCH)))
 
 MKDIR_P = mkdir -p
 
+GRUB_MKISO = grub-mkrescue
+
+CP = cp -r
+
 iso: build/$(ARCH)/deywos.iso
 
 clean:
 	$(RM) -r build
 
-build/$(ARCH)/deywos.iso: build/$(ARCH)/kernel.bin
+build/$(ARCH)/deywos.iso: \
+		build/$(ARCH)/iso/boot/kernel.bin \
+		build/$(ARCH)/iso/boot/grub/grub.cfg
+	$(GRUB_MKISO) -o $@ build/$(ARCH)/iso/
 
 build/$(ARCH)/asm/%.o: asm/$(ARCH)/%$(ASM_EXT)
 	$(MKDIR_P) build/$(ARCH)/asm/
 	$(ASM) $^ -o $@
 
-build/$(ARCH)/kernel.bin: link/$(ARCH)$(LD_EXT) $(ASM_OBJS)
-	$(MKDIR_P) build/$(ARCH)
+build/$(ARCH)/iso/boot/kernel.bin: link/$(ARCH)$(LD_EXT) $(ASM_OBJS)
+	$(MKDIR_P) build/$(ARCH)/iso/boot/
 	$(LD) -o $@ -T $< $(ASM_OBJS)
+
+build/$(ARCH)/iso/boot/grub/grub.cfg: iso/boot/grub/grub.cfg
+	$(MKDIR_P) build/$(ARCH)/iso/boot/grub/
+	$(CP) $^ $@
