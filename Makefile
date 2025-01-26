@@ -37,7 +37,7 @@ build/$(ARCH)/asm/%.o: asm/$(ARCH)/%$(ASM_EXT)
 	$(MKDIR_P) build/$(ARCH)/asm/
 	$(ASM) $^ -o $@
 
-build/$(ARCH)/iso/boot/kernel.bin: link/$(ARCH)$(LD_EXT) $(ASM_OBJS)
+build/$(ARCH)/iso/boot/kernel.bin: linker/$(ARCH)$(LD_EXT) $(ASM_OBJS)
 	$(MKDIR_P) build/$(ARCH)/iso/boot/
 	$(LD) -o $@ -T $< $(ASM_OBJS)
 
