@@ -7,7 +7,9 @@ LD_x86_64 = ld -n
 LD_EXT_x86_64 = .ld
 
 ASM_OBJS_x86_64 = \
-	boot.o
+	boot_protected.o \
+	boot_long.o \
+
 
 QEMU_x86_64 = qemu-system-x86_64
 
