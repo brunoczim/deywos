@@ -221,6 +221,10 @@ impl VgaWriter {
         VgaWriterGuard::new(VGA_WRITER.lock())
     }
 
+    pub fn attr(&self) -> VgaAttr {
+        self.attr
+    }
+
     pub fn set_attr(&mut self, attr: VgaAttr) {
         self.attr = attr;
     }
