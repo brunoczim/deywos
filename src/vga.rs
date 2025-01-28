@@ -6,6 +6,34 @@ use core::{
 
 use crate::spin::{Mutex, MutexGuard};
 
+pub fn clear() {
+    VgaWriter::lock().clear();
+}
+
+pub fn attr(attr: VgaAttr) {
+    VgaWriter::lock().set_attr(attr);
+}
+
+pub fn set_background(color: ColorBase) {
+    VgaWriter::lock().set_background(color);
+}
+
+pub fn set_foreground(color: Color) {
+    VgaWriter::lock().set_foreground(color);
+}
+
+pub fn set_foreground_base(base: ColorBase) {
+    VgaWriter::lock().set_foreground_base(base);
+}
+
+pub fn set_foreground_variant(variant: ColorVariant) {
+    VgaWriter::lock().set_foreground_variant(variant);
+}
+
+pub fn set_blink(blink: bool) {
+    VgaWriter::lock().set_blink(blink);
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[repr(u8)]
 pub enum ColorBase {
@@ -139,8 +167,29 @@ impl VgaBuffer {
                 blink: false,
             },
         };
+        let encoded = cell.encode();
         for j in 0 .. row_size {
-            self.set(row, j, cell);
+            self.set_raw(row, j, encoded);
+        }
+    }
+
+    pub fn clear(&mut self, background: ColorBase) {
+        let cell = VgaCell {
+            char: b' ',
+            attr: VgaAttr {
+                foreground: Color {
+                    base: background,
+                    variant: ColorVariant::Dark,
+                },
+                background,
+                blink: false,
+            },
+        };
+        let encoded = cell.encode();
+        for i in 0 .. self.cells.len() {
+            for j in 0 .. self.cells[i].len() {
+                self.set_raw(i, j, encoded);
+            }
         }
     }
 
@@ -170,6 +219,39 @@ impl VgaWriter {
     pub fn lock<'a>() -> VgaWriterGuard<'a> {
         static VGA_WRITER: Mutex<VgaWriter> = Mutex::new(VgaWriter::new());
         VgaWriterGuard::new(VGA_WRITER.lock())
+    }
+
+    pub fn set_attr(&mut self, attr: VgaAttr) {
+        self.attr = attr;
+    }
+
+    pub fn set_foreground(&mut self, color: Color) {
+        self.attr.foreground = color;
+    }
+
+    pub fn set_foreground_base(&mut self, base: ColorBase) {
+        self.attr.foreground.base = base;
+    }
+
+    pub fn set_foreground_variant(&mut self, variant: ColorVariant) {
+        self.attr.foreground.variant = variant;
+    }
+
+    pub fn set_background(&mut self, color: ColorBase) {
+        self.attr.background = color;
+    }
+
+    pub fn set_blink(&mut self, blink: bool) {
+        self.attr.blink = blink;
+    }
+
+    pub fn clear(&mut self) {
+        unsafe {
+            let buffer = VgaBuffer::get();
+            buffer.clear(self.attr.background);
+        }
+        self.i = 0;
+        self.j = 0;
     }
 
     pub fn write_str(&mut self, chars: &str) {

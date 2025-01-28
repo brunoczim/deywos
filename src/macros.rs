@@ -8,3 +8,14 @@ macro_rules! print {
         $crate::vga::flush();
     }};
 }
+
+#[macro_export]
+macro_rules! println {
+    ($($tok:tt)*) => {{
+        use core::fmt::Write as _;
+
+        $crate::vga::flush();
+        let _ = writeln!($crate::vga::VgaWriter::lock(), $($tok)*);
+        $crate::vga::flush();
+    }};
+}
