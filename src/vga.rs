@@ -6,11 +6,21 @@ use core::{
 
 use crate::spin::{Mutex, MutexGuard};
 
+pub fn init() {
+    let mut writer = VgaWriter::lock();
+    writer.clear();
+    writer.set_background(ColorBase::Black);
+}
+
 pub fn clear() {
     VgaWriter::lock().clear();
 }
 
-pub fn attr(attr: VgaAttr) {
+pub fn attr() -> VgaAttr {
+    VgaWriter::lock().attr()
+}
+
+pub fn set_attr(attr: VgaAttr) {
     VgaWriter::lock().set_attr(attr);
 }
 
@@ -331,6 +341,12 @@ pub struct VgaWriterGuard<'a> {
 impl<'a> VgaWriterGuard<'a> {
     fn new(inner: MutexGuard<'a, VgaWriter>) -> Self {
         Self { inner }
+    }
+}
+
+impl<'a> fmt::Write for VgaWriterGuard<'a> {
+    fn write_str(&mut self, string: &str) -> fmt::Result {
+        fmt::Write::write_str(&mut *self.inner, string)
     }
 }
 
