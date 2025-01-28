@@ -151,7 +151,7 @@ impl VgaBuffer {
         self.cells[i][j] = raw_cell;
     }
 
-    pub fn newline(&mut self) {
+    pub fn scroll_up(&mut self) {
         for i in 1 .. self.cells.len() {
             for j in 0 .. self.cells[i].len() {
                 let raw_cell = self.get_raw(i, j);
@@ -314,14 +314,13 @@ impl VgaWriter {
     fn newline(&mut self) {
         unsafe {
             let buffer = VgaBuffer::get();
-            if self.i < VgaBuffer::HEIGHT {
+            if self.i < VgaBuffer::HEIGHT - 1 {
                 self.i += 1;
-                self.j = 0;
             } else {
-                buffer.newline();
+                buffer.scroll_up();
                 buffer.clear_row(self.i, self.j, self.attr.background);
-                self.j = 0;
             }
+            self.j = 0;
         }
     }
 }

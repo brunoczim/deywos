@@ -13,7 +13,8 @@ mod vga;
 #[unsafe(no_mangle)]
 pub extern "C" fn main() {
     vga::init();
-    println!("Hello, World!");
+    let array: [u32; 128] = core::array::from_fn(|i| i as u32);
+    println!("{array:#?}");
 }
 
 #[panic_handler]

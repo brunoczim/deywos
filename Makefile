@@ -27,7 +27,7 @@ QEMU = $(QEMU_$(ARCH))
 
 RUST_FLAGS_debug =
 
-RUST_FLAGS_release =
+RUST_FLAGS_release = --release
 
 RUST_FLAGS = $(RUST_FLAGS_$(RUST_OPT))
 
