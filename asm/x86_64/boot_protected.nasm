@@ -121,7 +121,7 @@ start:
 .switch_to_long_mode:
     ; long jump to longe mode main
     jmp gdt64.code:long_mode_start
-.no_multiboot
+.no_multiboot:
     mov al, "0"
     jmp error
 .no_cpuid:
@@ -147,7 +147,7 @@ align 4096
 
 p4_table:
     resb 4096
-p3_table
+p3_table:
     resb 4096
 p2_table:
     resb 4096

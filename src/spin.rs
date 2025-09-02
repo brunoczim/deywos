@@ -45,7 +45,7 @@ impl<T> Mutex<T> {
         self.data.into_inner()
     }
 
-    pub fn lock(&self) -> MutexGuard<T> {
+    pub fn lock<'a>(&'a self) -> MutexGuard<'a, T> {
         loop {
             match self.try_lock() {
                 Some(guard) => break guard,
@@ -55,7 +55,7 @@ impl<T> Mutex<T> {
         }
     }
 
-    pub fn try_lock(&self) -> Option<MutexGuard<T>> {
+    pub fn try_lock<'a>(&'a self) -> Option<MutexGuard<'a, T>> {
         if self
             .locked
             .compare_exchange(Self::UNLOCKED, Self::LOCKED, Acquire, Relaxed)

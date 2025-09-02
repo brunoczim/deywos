@@ -7,8 +7,8 @@ use core::panic::PanicInfo;
 mod macros;
 
 mod libc;
-mod spin;
-mod vga;
+pub mod spin;
+pub mod vga;
 
 #[unsafe(no_mangle)]
 pub extern "C" fn main() {
@@ -20,7 +20,7 @@ pub extern "C" fn main() {
 #[panic_handler]
 #[cfg(not(test))]
 fn panic(info: &PanicInfo) -> ! {
-    use core::{fmt::Write as _, hint::spin_loop};
+    use core::hint::spin_loop;
 
     {
         let mut writer = vga::VgaWriter::lock();
