@@ -3,6 +3,8 @@
 #[cfg(not(test))]
 use core::panic::PanicInfo;
 
+use crate::vga::{ColorBase, ColorVariant, VgaWriter};
+
 #[macro_use]
 mod macros;
 
@@ -13,8 +15,12 @@ pub mod vga;
 #[unsafe(no_mangle)]
 pub extern "C" fn main() {
     vga::init();
-    let array: [u32; 128] = core::array::from_fn(|i| i as u32);
-    println!("{array:#?}");
+    let mut vga_writer = VgaWriter::lock();
+    vga_writer
+        .set_foreground_base(ColorBase::Brown)
+        .set_foreground_variant(ColorVariant::Bright)
+        .set_background(ColorBase::Green);
+    plockedln!(vga_writer, "Hello, World!");
 }
 
 #[panic_handler]

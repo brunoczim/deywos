@@ -235,28 +235,37 @@ impl VgaWriter {
         self.attr
     }
 
-    pub fn set_attr(&mut self, attr: VgaAttr) {
+    pub fn set_attr(&mut self, attr: VgaAttr) -> &mut Self {
         self.attr = attr;
+        self
     }
 
-    pub fn set_foreground(&mut self, color: Color) {
+    pub fn set_foreground(&mut self, color: Color) -> &mut Self {
         self.attr.foreground = color;
+        self
     }
 
-    pub fn set_foreground_base(&mut self, base: ColorBase) {
+    pub fn set_foreground_base(&mut self, base: ColorBase) -> &mut Self {
         self.attr.foreground.base = base;
+        self
     }
 
-    pub fn set_foreground_variant(&mut self, variant: ColorVariant) {
+    pub fn set_foreground_variant(
+        &mut self,
+        variant: ColorVariant,
+    ) -> &mut Self {
         self.attr.foreground.variant = variant;
+        self
     }
 
-    pub fn set_background(&mut self, color: ColorBase) {
+    pub fn set_background(&mut self, color: ColorBase) -> &mut Self {
         self.attr.background = color;
+        self
     }
 
-    pub fn set_blink(&mut self, blink: bool) {
+    pub fn set_blink(&mut self, blink: bool) -> &mut Self {
         self.attr.blink = blink;
+        self
     }
 
     pub fn clear(&mut self) {
